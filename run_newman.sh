@@ -1,1 +1,0 @@
-newman run --outputFileVerbose OtusOAuthArchitect.postman_collection.json

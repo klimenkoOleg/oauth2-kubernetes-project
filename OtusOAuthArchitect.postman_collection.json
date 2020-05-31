@@ -13,6 +13,9 @@
 					"script": {
 						"id": "42480bf7-e042-4113-bdfd-e420a23d6921",
 						"exec": [
+							"tests[\"[INFO] Response Headers: \" + JSON.stringify(pm.response.headers.all())] = true;",
+							"tests[\"[INFO] Response Body: \" + JSON.stringify(responseBody)] = true;",
+							"",
 							"var responseJSON = JSON.parse(responseBody)",
 							"pm.collectionVariables.set(\"userId\", responseJSON[\"userId\"])",
 							""
@@ -25,6 +28,9 @@
 					"script": {
 						"id": "c15adfe6-3a9f-4fe0-95de-9a35f6ee95e2",
 						"exec": [
+							"tests[\"[INFO] Request header: \" + JSON.stringify(request.headers)] = true;",
+							"tests[\"[INFO] Request Body: \" + JSON.stringify(request.data)] = true;",
+							"tests[\"[INFO] Request Url: \" + JSON.stringify(request.url)] = true;",
 							"pm.collectionVariables.set(\"user1_suffix\", Math.random().toString(36).substring(5));",
 							""
 						],
@@ -61,11 +67,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}/user/register",
+					"raw": "{{baseUrl}}/profile/user/register",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
+						"profile",
 						"user",
 						"register"
 					]
@@ -75,6 +82,32 @@
 		},
 		{
 			"name": "Change profile unauthorized",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5f42da79-3f16-4323-beab-c3ad7877df1c",
+						"exec": [
+							"tests[\"[INFO] Response Headers: \" + JSON.stringify(pm.response.headers.all())] = true;",
+							"tests[\"[INFO] Response Body: \" + JSON.stringify(responseBody)] = true;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "9f649aaa-9108-48cb-8a19-8fdf5221d4fc",
+						"exec": [
+							"tests[\"[INFO] Request header: \" + JSON.stringify(request.headers)] = true;",
+							"tests[\"[INFO] Request Body: \" + JSON.stringify(request.data)] = true;",
+							"tests[\"[INFO] Request Url: \" + JSON.stringify(request.url)] = true;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -104,11 +137,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}/user/edit",
+					"raw": "{{baseUrl}}/profile/user/edit",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
+						"profile",
 						"user",
 						"edit"
 					]
@@ -124,11 +158,26 @@
 					"script": {
 						"id": "124d373a-a04b-4ffb-8d2e-1aaafeaf92ce",
 						"exec": [
+							"tests[\"[INFO] Response Headers: \" + JSON.stringify(pm.response.headers.all())] = true;",
+							"tests[\"[INFO] Response Body: \" + JSON.stringify(responseBody)] = true;",
+							"",
 							"var responseJSON = JSON.parse(responseBody)",
 							"pm.environment.unset(\"authToken\");",
 							"pm.collectionVariables.set(\"authToken\", responseJSON[\"access_token\"])",
 							"",
 							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "1c1e8c92-a1d3-4710-abfa-c556c48806a8",
+						"exec": [
+							"tests[\"[INFO] Request header: \" + JSON.stringify(request.headers)] = true;",
+							"tests[\"[INFO] Request Body: \" + JSON.stringify(request.data)] = true;",
+							"tests[\"[INFO] Request Url: \" + JSON.stringify(request.url)] = true;"
 						],
 						"type": "text/javascript"
 					}
@@ -178,17 +227,18 @@
 						},
 						{
 							"key": "password",
-							"value": "{{userName}}_{{user1_suffix}}",
+							"value": "{{password}}_{{user1_suffix}}",
 							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "{{baseUrl}}/oauth/token",
+					"raw": "{{baseUrl}}/profile/oauth/token",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
+						"profile",
 						"oauth",
 						"token"
 					]
@@ -204,7 +254,21 @@
 					"script": {
 						"id": "8e25a059-b7c2-458d-b0f2-15dd9af250fc",
 						"exec": [
+							"tests[\"[INFO] Response Headers: \" + JSON.stringify(pm.response.headers.all())] = true;",
+							"tests[\"[INFO] Response Body: \" + JSON.stringify(responseBody)] = true;",
 							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b3746b37-21be-4c00-9d7c-23227608b246",
+						"exec": [
+							"tests[\"[INFO] Request header: \" + JSON.stringify(request.headers)] = true;",
+							"tests[\"[INFO] Request Body: \" + JSON.stringify(request.data)] = true;",
+							"tests[\"[INFO] Request Url: \" + JSON.stringify(request.url)] = true;"
 						],
 						"type": "text/javascript"
 					}
@@ -241,7 +305,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\t\"id\": \"{{userId}}\",\n\t\"userName\": \"{{userName}}_{{user1_suffix}}_changed\", \n\t\"email\": \"{{userName}}_{{user1_suffix}}_changed\",\n\t\"name\": \"{{userName}}_{{user1_suffix}}_changed\",\n\t\"department\": \"{{userName}}_{{user1_suffix}}_changed\"\n}",
+					"raw": "{\t\"id\": \"{{userId}}\",\n\t\"email\": \"{{userName}}_{{user1_suffix}}_changed\",\n\t\"name\": \"{{userName}}_{{user1_suffix}}_changed\",\n\t\"department\": \"{{userName}}_{{user1_suffix}}_changed\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -249,11 +313,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}/user/edit",
+					"raw": "{{baseUrl}}/profile/user/edit",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
+						"profile",
 						"user",
 						"edit"
 					]
@@ -263,6 +328,32 @@
 		},
 		{
 			"name": "Check profile changed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c35f0463-f088-45d0-8db2-1e5a89f6dfef",
+						"exec": [
+							"tests[\"[INFO] Response Headers: \" + JSON.stringify(pm.response.headers.all())] = true;",
+							"tests[\"[INFO] Response Body: \" + JSON.stringify(responseBody)] = true;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ec1666dc-0b07-4f92-b2ea-c7e07b0c6fd2",
+						"exec": [
+							"tests[\"[INFO] Request header: \" + JSON.stringify(request.headers)] = true;",
+							"tests[\"[INFO] Request Body: \" + JSON.stringify(request.data)] = true;",
+							"tests[\"[INFO] Request Url: \" + JSON.stringify(request.url)] = true;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -305,11 +396,12 @@
 					}
 				],
 				"url": {
-					"raw": "{{baseUrl}}/user/extra?userId={{userId}}",
+					"raw": "{{baseUrl}}/profile/user/extra?userId={{userId}}",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
+						"profile",
 						"user",
 						"extra"
 					],
@@ -325,6 +417,32 @@
 		},
 		{
 			"name": "Logout2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4a179092-46df-491d-91ef-72b98de41e1d",
+						"exec": [
+							"tests[\"[INFO] Response Headers: \" + JSON.stringify(pm.response.headers.all())] = true;",
+							"tests[\"[INFO] Response Body: \" + JSON.stringify(responseBody)] = true;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "acf14466-7f7c-43fb-9962-b5437b48ae25",
+						"exec": [
+							"tests[\"[INFO] Request header: \" + JSON.stringify(request.headers)] = true;",
+							"tests[\"[INFO] Request Body: \" + JSON.stringify(request.data)] = true;",
+							"tests[\"[INFO] Request Url: \" + JSON.stringify(request.url)] = true;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -335,14 +453,12 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8081/spring-security-oauth-server/oauth/token/revokeById/{{authToken}}",
-					"protocol": "http",
+					"raw": "{{baseUrl}}/profile/oauth/token/revokeById/{{authToken}}",
 					"host": [
-						"localhost"
+						"{{baseUrl}}"
 					],
-					"port": "8081",
 					"path": [
-						"spring-security-oauth-server",
+						"profile",
 						"oauth",
 						"token",
 						"revokeById",
@@ -360,6 +476,9 @@
 					"script": {
 						"id": "7ea20599-106d-4f39-b003-157e844169ae",
 						"exec": [
+							"tests[\"[INFO] Response Headers: \" + JSON.stringify(pm.response.headers.all())] = true;",
+							"tests[\"[INFO] Response Body: \" + JSON.stringify(responseBody)] = true;",
+							"",
 							"var responseJSON = JSON.parse(responseBody)",
 							"pm.collectionVariables.set(\"userId2\", responseJSON[\"userId\"])",
 							"",
@@ -373,6 +492,10 @@
 					"script": {
 						"id": "41164cca-d6b6-4cb8-9b44-ba9a38c114ec",
 						"exec": [
+							"tests[\"[INFO] Request header: \" + JSON.stringify(request.headers)] = true;",
+							"tests[\"[INFO] Request Body: \" + JSON.stringify(request.data)] = true;",
+							"tests[\"[INFO] Request Url: \" + JSON.stringify(request.url)] = true;",
+							"",
 							"pm.collectionVariables.set(\"user2_suffix\", Math.random().toString(36).substring(5));",
 							""
 						],
@@ -404,11 +527,12 @@
 					"raw": "{\t\"userName\": \"{{userName}}_{{user2_suffix}}\", \n\t\"password\": \"{{password}}_{{user2_suffix}}\", \n\t\"email\": \"{{email}}_{{user2_suffix}}\",\n\t\"name\": \"{{name2}}_{{user2_suffix}}\",\n\t\"department\": \"{{department2}}_{{user2_suffix}}\"\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/user/register",
+					"raw": "{{baseUrl}}/profile/user/register",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
+						"profile",
 						"user",
 						"register"
 					]
@@ -424,10 +548,25 @@
 					"script": {
 						"id": "dbfaf031-4b33-4773-bf86-72c979362e0a",
 						"exec": [
+							"tests[\"[INFO] Response Headers: \" + JSON.stringify(pm.response.headers.all())] = true;",
+							"tests[\"[INFO] Response Body: \" + JSON.stringify(responseBody)] = true;",
+							"",
 							"var responseJSON = JSON.parse(responseBody)",
 							"pm.environment.unset(\"authToken2\");",
 							"pm.collectionVariables.set(\"authToken2\", responseJSON[\"access_token\"])",
 							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d43bc7d5-4351-4a41-9049-8a88f681fb45",
+						"exec": [
+							"tests[\"[INFO] Request header: \" + JSON.stringify(request.headers)] = true;",
+							"tests[\"[INFO] Request Body: \" + JSON.stringify(request.data)] = true;",
+							"tests[\"[INFO] Request Url: \" + JSON.stringify(request.url)] = true;"
 						],
 						"type": "text/javascript"
 					}
@@ -473,22 +612,23 @@
 						},
 						{
 							"key": "username",
-							"value": "{{userName2}}",
+							"value": "{{userName}}_{{user2_suffix}}",
 							"type": "text"
 						},
 						{
 							"key": "password",
-							"value": "{{password2}}",
+							"value": "{{password}}_{{user2_suffix}}",
 							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "{{baseUrl}}/oauth/token",
+					"raw": "{{baseUrl}}/profile/oauth/token",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
+						"profile",
 						"oauth",
 						"token"
 					]
@@ -497,7 +637,33 @@
 			"response": []
 		},
 		{
-			"name": "Check profile for User1",
+			"name": "Check profile for User1 using User2 JWT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4395fb11-cf62-44d4-bfe6-904d92320a75",
+						"exec": [
+							"tests[\"[INFO] Response Headers: \" + JSON.stringify(pm.response.headers.all())] = true;",
+							"tests[\"[INFO] Response Body: \" + JSON.stringify(responseBody)] = true;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "fe6ed9a4-ecff-4bfc-a7bf-2cea315174a8",
+						"exec": [
+							"tests[\"[INFO] Request header: \" + JSON.stringify(request.headers)] = true;",
+							"tests[\"[INFO] Request Body: \" + JSON.stringify(request.data)] = true;",
+							"tests[\"[INFO] Request Url: \" + JSON.stringify(request.url)] = true;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -540,18 +706,19 @@
 					}
 				],
 				"url": {
-					"raw": "{{baseUrl}}/user/extra?userId={{userId2}}",
+					"raw": "{{baseUrl}}/profile/user/extra?userId={{userId}}",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
+						"profile",
 						"user",
 						"extra"
 					],
 					"query": [
 						{
 							"key": "userId",
-							"value": "{{userId2}}"
+							"value": "{{userId}}"
 						}
 					]
 				}
@@ -583,75 +750,75 @@
 	],
 	"variable": [
 		{
-			"id": "9b7ae301-fd74-4ec7-85ce-641627f46da5",
+			"id": "cffa5394-0b64-47cd-a0bb-4600357d42a3",
 			"key": "userName",
 			"value": "testUser",
 			"type": "string"
 		},
 		{
-			"id": "9e634466-4480-4522-97da-d147f22c17c5",
+			"id": "5a01d844-48d9-4ccf-8044-d255feb12d80",
 			"key": "password",
 			"value": "pass123",
 			"type": "string"
 		},
 		{
-			"id": "8fec9036-5aea-4346-a8c4-7842063e56fd",
+			"id": "511eaa51-f6ac-42de-b8f5-caa34477cb2f",
 			"key": "email",
 			"value": "oklimenko@gmail.com",
 			"type": "string"
 		},
 		{
-			"id": "a3f3876b-63dd-4d78-a406-37d35528e396",
+			"id": "4338b2e6-d66b-4dff-bf0d-b6a37ceba45c",
 			"key": "department",
 			"value": "RnD department",
 			"type": "string"
 		},
 		{
-			"id": "8902c80b-4cfb-431f-9d10-14f0bac3babf",
+			"id": "f46fbebc-d4b5-48ba-bda2-746f2799907b",
 			"key": "userId",
 			"value": 1,
 			"type": "number"
 		},
 		{
-			"id": "3f8e6ae1-1f16-428c-a341-7402bd6ae0c7",
+			"id": "8a857898-5d59-4166-8cb5-6995467b8221",
 			"key": "name",
 			"value": "Oleg Klimenko",
 			"type": "string"
 		},
 		{
-			"id": "ae56d8b7-cee2-43c1-9ff2-70218c123d85",
+			"id": "3c187821-b716-49d9-9d3b-51b7130a0e12",
 			"key": "authToken",
-			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTA4NDU2NjUsInVzZXJfbmFtZSI6InRlc3RVc2VyX2V2MTZwcmYiLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJqdGkiOiI1YmU3ODAzYS1hNjk1LTRjZjktYjQ3NC1iNTRhNWFmMjM5OTMiLCJjbGllbnRfaWQiOiJmb29DbGllbnRJZFBhc3N3b3JkIiwic2NvcGUiOlsiZm9vIiwicmVhZCIsIndyaXRlIl19.X_5TbVK8iC_daljXqjGdvELKy7-Yf4V1bJkScoDJoVI",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTA5NTQzNTMsInVzZXJfbmFtZSI6InRlc3RVc2VyX3p3dnBuaWFxIiwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiMTU1MTJhOTgtZDkwMC00NzU0LWI4MjEtM2JkZTMxZDRjODU2IiwiY2xpZW50X2lkIjoiZm9vQ2xpZW50SWRQYXNzd29yZCIsInNjb3BlIjpbImZvbyIsInJlYWQiLCJ3cml0ZSJdfQ.llRXEgsvY_Pps_NHi36NKMwUwu2N7WhPbS0rAq8zGRk",
 			"type": "string"
 		},
 		{
-			"id": "8fb09b98-ca5d-4c6c-a213-e20b12010635",
+			"id": "20121368-42b9-4aef-a989-30ba644692b5",
 			"key": "userId2",
 			"value": 2,
 			"type": "number"
 		},
 		{
-			"id": "e994401b-1f35-43bb-9378-4b726b308773",
+			"id": "0d3660a6-c0ba-4bcb-8c6e-ec1a2078bf86",
 			"key": "authToken2",
-			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTA4NDU3MjcsInVzZXJfbmFtZSI6InRlc3RVc2VyX25wZjFvcG9uIiwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiNzA1NDhjNWItODgwOS00ZmYyLWIzYzctZTQ0MmNmMzQzYThiIiwiY2xpZW50X2lkIjoiZm9vQ2xpZW50SWRQYXNzd29yZCIsInNjb3BlIjpbImZvbyIsInJlYWQiLCJ3cml0ZSJdfQ.OLFuwpZF1nfntojt6H2RQHDafvG80mSc9TchnD2yYOQ",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTA5NTQ0MTMsInVzZXJfbmFtZSI6InRlc3RVc2VyX2U0aWtmMjlvIiwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiNmM5MzRlZDMtYTIyMy00MjhkLTlhZWEtNThhY2M4NTkxMzJlIiwiY2xpZW50X2lkIjoiZm9vQ2xpZW50SWRQYXNzd29yZCIsInNjb3BlIjpbImZvbyIsInJlYWQiLCJ3cml0ZSJdfQ.Lx94rTTg6kcPklivpmOZdA2-bc5brLDQ-ATSYfpRVu0",
 			"type": "string"
 		},
 		{
-			"id": "11e8dfa3-421e-4054-81dc-eb2bd6bdb2ee",
+			"id": "e3fdd436-d64d-4d06-8507-929966f4e398",
 			"key": "baseUrl",
-			"value": "localhost:8080",
+			"value": "arch.homework",
 			"type": "string"
 		},
 		{
-			"id": "e0a31152-b55c-40ed-bb66-b5d903fe4531",
+			"id": "ec6b55df-2833-4955-9838-167f2fad72f8",
 			"key": "user1_suffix",
-			"value": "ev16prf",
+			"value": "zwvpniaq",
 			"type": "string"
 		},
 		{
-			"id": "b238a44c-de35-4016-9b34-58a4f122472c",
+			"id": "7c026a25-223a-4104-96de-8c2b3ad4121c",
 			"key": "user2_suffix",
-			"value": "npf1opon",
+			"value": "e4ikf29o",
 			"type": "string"
 		}
 	],
