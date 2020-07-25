@@ -1,6 +1,7 @@
 # Architecture description
 
 Ouath server + user server:  https://github.com/klimenkoOleg/spring-oauth-server
+API Gateway Zuul configuration: https://github.com/klimenkoOleg/zuul-oauth2
 
 
 
